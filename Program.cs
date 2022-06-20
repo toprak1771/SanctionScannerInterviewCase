@@ -22,7 +22,8 @@ namespace SanctionScannerInterviewCase
             List<string> priceList = new List<string>();
             List<string> titleList = new List<string>();
 
-            //All urls are stored in urlList in order to be able to enter the urls on the showcase screen on the home page. 
+            //All urls are stored in urlList in order to be able to enter the urls on the showcase screen on the home page.
+            //The reason why the variable goes from 1 to 57 in the for loop is because the li parameter of the showcase advertisements starts from 1 and ends at 56.
             for (int i = 1; i < 57; i++)
             {
                 GetUrl("https://www.sahibinden.com.tr/", "//*[@id='container']/div[3]/div/div[3]/div[3]/ul/li[" + i +"]/a", "href", urlList);
@@ -93,13 +94,13 @@ namespace SanctionScannerInterviewCase
             {
                 url = new Uri(Url);
             }
-            catch (UriFormatException)
+            catch (UriFormatException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
             //Create a client from the server.
@@ -111,9 +112,9 @@ namespace SanctionScannerInterviewCase
             {
                 html = client.DownloadString(url);
             }
-            catch (WebException)
+            catch (WebException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
             //Thanks to the HtmlAgilityPack library, we download the string expressions downloaded from the url as html to the document that is created.
@@ -125,9 +126,9 @@ namespace SanctionScannerInterviewCase
             {
                 list.Add(document.DocumentNode.SelectSingleNode(Xpath).InnerText);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                Console.WriteLine("Fail Xpath");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
         }
@@ -140,13 +141,13 @@ namespace SanctionScannerInterviewCase
             {
                 url = new Uri(Url);
             }
-            catch (UriFormatException)
+            catch (UriFormatException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
             //Create a client from the server.
@@ -158,9 +159,9 @@ namespace SanctionScannerInterviewCase
             {
                 html = client.DownloadString(url);
             }
-            catch (WebException)
+            catch (WebException e)
             {
-                Console.WriteLine("Fail url");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
             //Thanks to the HtmlAgilityPack library, we download the string expressions downloaded from the url as html to the document that is created.
@@ -172,9 +173,9 @@ namespace SanctionScannerInterviewCase
             {
                 list.Add(document.DocumentNode.SelectSingleNode(Xpath).Attributes[getUrl].Value);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
-                Console.WriteLine("Fail Xpath");
+                Console.WriteLine("Exception:" + e.Message);
             }
 
         }
