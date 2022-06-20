@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,58 +10,85 @@ namespace SanctionScannerInterviewCase
 {
     class Program
     {
-        //Global değişkenler metodlarda ve çıktılarda kullanmak için tanımlandı.
+        //Global variables are defined for use in methods and outputs.
         public static string html;
         public static Uri url;
         public static int sum = 0;
 
         static void Main(string[] args)
         {
-            //Metodlardan gelen verileri listelerde saklamak için listeler oluşturuldu.
+            //Lists were created to store data from methods in lists.
             List<string> urlList = new List<string>();
             List<string> priceList = new List<string>();
             List<string> titleList = new List<string>();
 
-            //Anasayfa sayfasındaki vitrin ekranındaki url'lerin içine girebilmek için bütün url'ler urlList içine depolandı. 
+            //All urls are stored in urlList in order to be able to enter the urls on the showcase screen on the home page. 
             for (int i = 1; i < 57; i++)
             {
                 GetUrl("https://www.sahibinden.com.tr/", "//*[@id='container']/div[3]/div/div[3]/div[3]/ul/li[" + i +"]/a", "href", urlList);
                             
             }
 
-            //Foreach yardımı ile gelen urlList'den gelen url'ler ilan başlığı ve fiyatı alabilmek için metodun içinbe yazıldı.
+            //The urls coming from the urlList with the help of Foreach are written in the method to get the ad title and price.
             foreach (var item in urlList)
             {
                 GetData(" " + item + " ", "//*[@id='classifiedDetail']/div/div[2]/div[2]/h3", priceList);
                 GetData("" + item + "", "//*[@id='classifiedDetail']/div/div[1]/h1", titleList);
             }
 
-            //Foreach yardımı ile başlıklar console ekranına yazdırıldı.
+            //Titles are writed to the console screen with the help of foreach.
             foreach (var title in titleList)
             {
                 Console.WriteLine(title);
             }
 
-            //Foreach yardımı ile fiyatlar başlık ekranına yazdırıldı.
+            //Prices are writed to the console screen with the help of foreach.
             foreach (var price in priceList)
             {
 
                 Console.WriteLine(price);
                 sum += Convert.ToInt32(price);
                 double average = sum / (priceList.Count());
-                Console.WriteLine("All of the average of prices: {0} ", average);
+                Console.WriteLine("Average of all prices:" + average);
             }
 
+            //Writing titles and prices to text file
+            try
+            {
+                //Pass the filepath and filename to the StreamWriter Constructor
+                StreamWriter streamWriter = new StreamWriter("C:\\Test.txt");
 
+                //Write title to file 
+                foreach (var titleTxt in titleList)
+                {
+                    streamWriter.WriteLine(titleTxt);
+                }
+
+                //Write price to file
+                foreach (var priceTxt in priceList)
+                {
+                    streamWriter.WriteLine(priceTxt);
+                }
+                streamWriter.Close();
+            }
+            //catch method to catch the error made
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception:" + e.Message);
+            }
+            finally 
+            {
+                Console.WriteLine("Executing finally block.");
+            }
 
 
         }
 
 
-        //Gelen url'lerden fiyat ve başlığı çekmemize yarayan metot
+        //A method for pulling price and title from incoming urls
         public static void GetData(String Url, String Xpath, List<string> list)
         {
-            //Globalde tanımladığımız url'ye metodumuza parametre olarak yolladığımız url'ye eşitlendi. Hatalar cath metotlarıyla yakalandı.
+            //It is equalized to the url we defined in the global and the url we sent as a parameter to our method. Errors are caught with the cath methods.
             try
             {
                 url = new Uri(Url);
@@ -74,11 +102,11 @@ namespace SanctionScannerInterviewCase
                 Console.WriteLine("Fail url");
             }
 
-            //Sunucudan bir istemci oluştururuz.
+            //Create a client from the server.
             WebClient client = new WebClient();
             client.Encoding = Encoding.UTF8;
 
-            //Globalde oluşturduğumuz html'ye, istemci içine yollayadığımız url'nin içindeki string ifadeleri indirip eşitleriz.
+            //Download and synchronize the string expressions in the html which is created globally, in the url we sent to the client.
             try
             {
                 html = client.DownloadString(url);
@@ -88,11 +116,11 @@ namespace SanctionScannerInterviewCase
                 Console.WriteLine("Fail url");
             }
 
-            //HtmlAgilityPack kütüphanesi sayesinde oluşturduğumuz dökümana, url içinden indirdiğimiz string ifadeleri html olarak indiririz.
+            //Thanks to the HtmlAgilityPack library, we download the string expressions downloaded from the url as html to the document that is created.
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(html);
 
-            //İçinde url'mizdeki html dosyası olan dökümana istediğimiz verinin xpath bilgisini yollayarak içindeki text'i yakalayıp parametreden yolladığımız listenin içine atarız.
+            //Send the xpath information of the data, we want to the document with the html file in our url, capture the text in it and throw it into the list we sent from the parameter.
             try
             {
                 list.Add(document.DocumentNode.SelectSingleNode(Xpath).InnerText);
@@ -104,10 +132,10 @@ namespace SanctionScannerInterviewCase
 
         }
 
-        //Anasayfa sekmesinden gelen vitrin ilanların url'sini çekmemize saülayan metot
+        //A method that allows us to retrieve the url of the showcase ads coming from the Home tab.
         public static void GetUrl(String Url, String Xpath, String getUrl ,List<string> list)
         {
-            //Globalde tanımladığımız url'ye metodumuza parametre olarak yolladığımız url'ye eşitlendi. Hatalar cath metotlarıyla yakalandı.
+            //It is equalized to the url we defined in the global and the url we sent as a parameter to our method. Errors are caught with the cath methods.
             try
             {
                 url = new Uri(Url);
@@ -121,11 +149,11 @@ namespace SanctionScannerInterviewCase
                 Console.WriteLine("Fail url");
             }
 
-            //Sunucudan bir istemci oluştururuz.
+            //Create a client from the server.
             WebClient client = new WebClient();
             client.Encoding = Encoding.UTF8;
 
-            //Globalde oluşturduğumuz html'ye, istemci içine yollayadığımız url'nin içindeki string ifadeleri indirip eşitleriz.
+            //Download and synchronize the string expressions in the html which is created globally, in the url we sent to the client.
             try
             {
                 html = client.DownloadString(url);
@@ -135,11 +163,11 @@ namespace SanctionScannerInterviewCase
                 Console.WriteLine("Fail url");
             }
 
-            //HtmlAgilityPack kütüphanesi sayesinde oluşturduğumuz dökümana, url içinden indirdiğimiz string ifadeleri html olarak indiririz.
+            //Thanks to the HtmlAgilityPack library, we download the string expressions downloaded from the url as html to the document that is created.
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(html);
 
-            //İçinde url'mizdeki html dosyası olan dökümana istediğimiz verinin xpath bilgisini yollayarak içindeki text'i yakalayıp parametreden yolladığımız listenin içine atarız.
+            //Send the xpath information of the data, we want to the document with the html file in our url, capture the text in it and throw it into the list we sent from the parameter.
             try
             {
                 list.Add(document.DocumentNode.SelectSingleNode(Xpath).Attributes[getUrl].Value);
@@ -150,8 +178,6 @@ namespace SanctionScannerInterviewCase
             }
 
         }
-
-
 
     }
 }
