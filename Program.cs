@@ -26,7 +26,7 @@ namespace SanctionScannerInterviewCase
             //The reason why the variable goes from 1 to 57 in the for loop is because the li parameter of the showcase advertisements starts from 1 and ends at 56.
             for (int i = 1; i < 57; i++)
             {
-                GetUrl("https://www.sahibinden.com.tr/", "//*[@id='container']/div[3]/div/div[3]/div[3]/ul/li[" + i +"]/a", "href", urlList);
+                GetUrl("Siteyi Yazınız...", "//*[@id='container']/div[3]/div/div[3]/div[3]/ul/li[" + i +"]/a", "href", urlList);
                             
             }
 
